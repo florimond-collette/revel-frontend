@@ -286,7 +286,8 @@
 		enabled: !!accessToken
 	}));
 
-	// Fetch upcoming RSVPs count (status = "yes")
+	// Fetch upcoming RSVPs count (Going + Maybe — a tentative RSVP is the one
+	// users are most likely to forget, so it must be surfaced too).
 	const upcomingRsvpsQuery = createQuery(() => ({
 		queryKey: ['dashboard-upcoming-rsvps-count'],
 		queryFn: async () => {
@@ -295,7 +296,7 @@
 			const response = await dashboardDashboardRsvps({
 				headers: { Authorization: `Bearer ${accessToken}` },
 				query: {
-					status: 'yes' as const,
+					status: ['yes', 'maybe'],
 					include_past: false,
 					page_size: 1
 				}
@@ -579,7 +580,7 @@
 			<!-- Upcoming RSVPs -->
 			{#if upcomingRsvpsCount > 0}
 				<a
-					href="/dashboard/rsvps"
+					href="/dashboard/rsvps?status=yes,maybe"
 					class="group rounded-lg border bg-card p-6 transition-all hover:border-primary hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
 				>
 					<div class="flex items-start justify-between">
